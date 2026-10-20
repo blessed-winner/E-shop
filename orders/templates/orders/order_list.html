@@ -1,0 +1,23 @@
+{% extends "products/base.html" %}
+
+{% block title %}Orders — Eshop{% endblock %}
+{% block meta_desc %}Track and review your Eshop orders in one place.{% endblock %}
+
+{% block content %}
+
+  <section class="page-hero">
+    <p class="eyebrow">Your account</p>
+    <h1 class="page-hero__title">Your orders</h1>
+    <p class="page-hero__lede">Track deliveries, review past purchases and reorder your favourites from one place.</p>
+  </section>
+
+  <div class="empty-state">
+    <div class="empty-state__icon" aria-hidden="true">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 16v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h11"/><path d="m8 9 3-3 3 3"/><path d="M21 15v6a2 2 0 0 1-2 2H9"/></svg>
+    </div>
+    <h2>No orders yet</h2>
+    <p>Once you place an order it will appear here with its status, history and tracking details.</p>
+    <a class="btn btn--ink" href="{% url 'product_list' %}">Start shopping</a>
+  </div>
+
+{% endblock %}

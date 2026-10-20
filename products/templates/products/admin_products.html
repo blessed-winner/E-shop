@@ -1,0 +1,126 @@
+{% extends "products/admin_base.html" %}
+
+{% block title %}Products — Eshop Admin{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+  <div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 1.5rem;">
+    <div>
+      <p class="eyebrow">Product Management</p>
+      <h1 class="page-hero__title">All Products</h1>
+      <p class="page-hero__lede">View and manage your product inventory.</p>
+    </div>
+    <a href="{% url 'admin:products_product_add' %}" class="btn btn--accent" style="margin-top: 0.5rem;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+      Add Product
+    </a>
+  </div>
+</section>
+
+{# Filters #}
+<div class="admin-filters">
+  <form method="get" class="filter-form">
+    <div class="filter-group">
+      <input 
+        type="search" 
+        name="q" 
+        value="{{ search_query }}" 
+        placeholder="Search products..." 
+        class="filter-input"
+      />
+      
+      <select name="category" class="filter-select">
+        <option value="">All Categories</option>
+        {% for cat in categories %}
+          <option value="{{ cat.slug }}" {% if category_filter == cat.slug %}selected{% endif %}>
+            {{ cat.name }}
+          </option>
+        {% endfor %}
+      </select>
+      
+      <select name="stock" class="filter-select">
+        <option value="">All Stock Status</option>
+        <option value="in_stock" {% if stock_filter == 'in_stock' %}selected{% endif %}>In Stock</option>
+        <option value="out_of_stock" {% if stock_filter == 'out_of_stock' %}selected{% endif %}>Out of Stock</option>
+      </select>
+      
+      <button type="submit" class="btn btn--ink">Apply</button>
+      
+      {% if search_query or category_filter or stock_filter %}
+        <a href="{% url 'admin_products' %}" class="btn" style="background: var(--surface); border: 1px solid var(--line-strong);">Clear</a>
+      {% endif %}
+    </div>
+  </form>
+</div>
+
+{# Products Table #}
+{% if products %}
+<div class="data-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Category</th>
+        <th>Price</th>
+        <th>Stock Status</th>
+        <th>Created</th>
+        <th class="text-right">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for product in products %}
+      <tr>
+        <td>
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div style="width: 48px; height: 48px; border-radius: var(--radius); background: linear-gradient(135deg, #f1efe9, #e7e3da); display: grid; place-items: center; font-family: var(--font-display); font-size: 1.2rem; font-weight: 600; color: rgba(23, 19, 15, .32);">
+              {{ product.name|slice:":1"|upper }}
+            </div>
+            <div>
+              <strong style="display: block;">{{ product.name }}</strong>
+              <span class="mono" style="font-size: 0.75rem; color: var(--muted);">{{ product.slug }}</span>
+            </div>
+          </div>
+        </td>
+        <td>{{ product.category.name|default:"—" }}</td>
+        <td><strong>${{ product.price }}</strong></td>
+        <td>
+          {% if product.in_stock %}
+            <span class="badge badge--success">In Stock</span>
+          {% else %}
+            <span class="badge badge--danger">Out of Stock</span>
+          {% endif %}
+        </td>
+        <td style="color: var(--muted); font-size: 0.85rem;">{{ product.created_at|date:"M d, Y" }}</td>
+        <td class="text-right">
+          <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+            <a href="{{ product.get_absolute_url }}" class="btn-icon" title="View">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+            </a>
+            <a href="{% url 'admin:products_product_change' product.id %}" class="btn-icon" title="Edit">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+            </a>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<p style="margin-top: 1.5rem; color: var(--muted); font-size: 0.9rem;">
+  Showing {{ products|length }} product{{ products|length|pluralize }}
+</p>
+
+{% else %}
+<div class="empty-state">
+  <div class="empty-state__icon" aria-hidden="true">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v8a2 2 0 0 1-1 1.73l-7 4a2 2 0 0 1-2 0l-7-4A2 2 0 0 1 3 16V8a2 2 0 0 1 1-1.73l7-4a2 2 0 0 1 2 0l7 4A2 2 0 0 1 21 8z"/></svg>
+  </div>
+  <h2>No products found</h2>
+  <p>Try adjusting your filters or create a new product.</p>
+  <a class="btn btn--ink" href="{% url 'admin:products_product_add' %}">Add Product</a>
+</div>
+{% endif %}
+
+{% endblock %}

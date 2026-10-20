@@ -1,0 +1,66 @@
+{% extends "products/base.html" %}
+
+{% block title %}Shop — Eshop{% endblock %}
+{% block meta_desc %}Browse our full collection of premium products.{% endblock %}
+
+{% block content %}
+
+  <section class="page-hero">
+    <p class="eyebrow">The collection</p>
+    <h1 class="page-hero__title">Considered goods for everyday life.</h1>
+    <p class="page-hero__lede">Hand-picked items from independent makers, ready to ship. Browse the full range or narrow it down by category.</p>
+  </section>
+
+  {# Category filter bar #}
+  {% if categories %}
+  <nav class="filter-bar" aria-label="Filter by category">
+    <a href="{% url 'product_list' %}"
+       class="filter-chip{% if not active_category %} filter-chip--active{% endif %}"
+       {% if not active_category %}aria-current="true"{% endif %}>All</a>
+    {% for cat in categories %}
+    <a href="{% url 'product_list' %}?category={{ cat.slug }}"
+       class="filter-chip{% if active_category.slug == cat.slug %} filter-chip--active{% endif %}"
+       {% if active_category.slug == cat.slug %}aria-current="true"{% endif %}>{{ cat.name }}</a>
+    {% endfor %}
+  </nav>
+  {% endif %}
+
+  {# Product grid #}
+  {% if products %}
+  <ul class="product-grid">
+    {% for product in products %}
+    <li class="product-card">
+      <a href="{{ product.get_absolute_url }}" class="product-card__link" id="card-{{ product.slug }}">
+        <div class="product-card__media" aria-hidden="true">
+          <span class="product-card__monogram">{{ product.name|slice:":1"|upper }}</span>
+        </div>
+        <div class="product-card__body">
+          {% if product.category %}
+          <span class="product-card__category">{{ product.category.name }}</span>
+          {% endif %}
+          <h2 class="product-card__name">{{ product.name }}</h2>
+          <div class="product-card__footer">
+            <span class="product-card__price">${{ product.price }}</span>
+            <span class="product-card__cta">
+              View
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+            </span>
+          </div>
+        </div>
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-state__icon" aria-hidden="true">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v8a2 2 0 0 1-1 1.73l-7 4a2 2 0 0 1-2 0l-7-4A2 2 0 0 1 3 16V8a2 2 0 0 1 1-1.73l7-4a2 2 0 0 1 2 0l7 4A2 2 0 0 1 21 8z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+    </div>
+    <h2>No products found</h2>
+    <p>Try a different category or check back soon.</p>
+    <a class="btn btn--ink" href="{% url 'product_list' %}">Browse all products</a>
+  </div>
+  {% endif %}
+
+{% endblock %}

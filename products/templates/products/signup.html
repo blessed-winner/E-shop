@@ -1,0 +1,109 @@
+{% extends "products/base.html" %}
+
+{% block title %}Sign Up — Eshop{% endblock %}
+{% block meta_desc %}Create an Eshop account to start shopping.{% endblock %}
+
+{% block content %}
+
+<div class="auth-page">
+  <div class="auth-container">
+    <div class="auth-header">
+      <h1 class="auth-title">Create your account</h1>
+      <p class="auth-subtitle">Join Eshop and start shopping our curated collection.</p>
+    </div>
+
+    <form method="post" class="auth-form" novalidate>
+      {% csrf_token %}
+      
+      {% if form.non_field_errors %}
+        <div class="form-errors">
+          {% for error in form.non_field_errors %}
+            <p class="form-error">{{ error }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="{{ form.first_name.id_for_label }}" class="form-label">First name</label>
+          {{ form.first_name }}
+          {% if form.first_name.errors %}
+            <div class="field-errors">
+              {% for error in form.first_name.errors %}
+                <p class="field-error">{{ error }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.last_name.id_for_label }}" class="form-label">Last name</label>
+          {{ form.last_name }}
+          {% if form.last_name.errors %}
+            <div class="field-errors">
+              {% for error in form.last_name.errors %}
+                <p class="field-error">{{ error }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.username.id_for_label }}" class="form-label">Username</label>
+        {{ form.username }}
+        {% if form.username.errors %}
+          <div class="field-errors">
+            {% for error in form.username.errors %}
+              <p class="field-error">{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+        {{ form.email }}
+        {% if form.email.errors %}
+          <div class="field-errors">
+            {% for error in form.email.errors %}
+              <p class="field-error">{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.password1.id_for_label }}" class="form-label">Password</label>
+        {{ form.password1 }}
+        {% if form.password1.errors %}
+          <div class="field-errors">
+            {% for error in form.password1.errors %}
+              <p class="field-error">{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.password2.id_for_label }}" class="form-label">Confirm password</label>
+        {{ form.password2 }}
+        {% if form.password2.errors %}
+          <div class="field-errors">
+            {% for error in form.password2.errors %}
+              <p class="field-error">{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      <button type="submit" class="btn btn--ink btn--block">Create account</button>
+    </form>
+
+    <div class="auth-footer">
+      <p>Already have an account? <a href="{% url 'customer_login' %}" class="auth-link">Sign in</a></p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

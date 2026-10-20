@@ -1,0 +1,98 @@
+{% extends "products/base.html" %}
+
+{% block title %}{{ product.name }} — Eshop{% endblock %}
+{% block meta_desc %}{{ product.description|truncatechars:160 }}{% endblock %}
+
+{% block content %}
+
+  {# Breadcrumb #}
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="{% url 'product_list' %}">Shop</a>
+    <span class="breadcrumb__sep" aria-hidden="true">/</span>
+    {% if product.category %}
+    <a href="{% url 'product_list' %}?category={{ product.category.slug }}">{{ product.category.name }}</a>
+    <span class="breadcrumb__sep" aria-hidden="true">/</span>
+    {% endif %}
+    <span class="breadcrumb__current" aria-current="page">{{ product.name }}</span>
+  </nav>
+
+  {# Main detail layout #}
+  <article class="detail">
+
+    {# Left — media placeholder #}
+    <div class="detail__media" aria-hidden="true">
+      <span class="detail__monogram">{{ product.name|slice:":1"|upper }}</span>
+    </div>
+
+    {# Right — info #}
+    <div class="detail__info">
+      {% if product.category %}
+      <a class="eyebrow" href="{% url 'product_list' %}?category={{ product.category.slug }}">{{ product.category.name }}</a>
+      {% endif %}
+
+      <h1 class="detail__name">{{ product.name }}</h1>
+      <p class="detail__price">${{ product.price }}</p>
+
+      {% if product.description %}
+      <div class="detail__desc">{{ product.description|linebreaks }}</div>
+      {% endif %}
+
+      <dl class="detail__meta">
+        <div>
+          <dt>Availability</dt>
+          <dd>
+            {% if product.in_stock %}
+            <span class="stock stock--in">In stock</span>
+            {% else %}
+            <span class="stock stock--out">Out of stock</span>
+            {% endif %}
+          </dd>
+        </div>
+        <div>
+          <dt>SKU</dt>
+          <dd class="mono">{{ product.slug }}</dd>
+        </div>
+      </dl>
+
+      <button class="btn btn--accent btn--block" id="btn-add-{{ product.slug }}" type="button">Add to cart</button>
+    </div>
+  </article>
+
+  {# Related products #}
+  {% if related %}
+  <section class="related">
+    <div class="section-head">
+      <h2 class="section-head__title">You may also like</h2>
+      <a class="text-link" href="{% url 'product_list' %}">
+        Back to all products
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+      </a>
+    </div>
+    <ul class="product-grid">
+      {% for item in related %}
+      <li class="product-card">
+        <a href="{{ item.get_absolute_url }}" class="product-card__link" id="card-{{ item.slug }}">
+          <div class="product-card__media" aria-hidden="true">
+            <span class="product-card__monogram">{{ item.name|slice:":1"|upper }}</span>
+          </div>
+          <div class="product-card__body">
+            {% if item.category %}
+            <span class="product-card__category">{{ item.category.name }}</span>
+            {% endif %}
+            <h3 class="product-card__name">{{ item.name }}</h3>
+            <div class="product-card__footer">
+              <span class="product-card__price">${{ item.price }}</span>
+              <span class="product-card__cta">
+                View
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+              </span>
+            </div>
+          </div>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+{% endblock %}

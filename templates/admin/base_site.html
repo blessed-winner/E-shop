@@ -1,0 +1,34 @@
+{% extends "admin/base.html" %}
+{% load i18n static %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:"Eshop" }}{% endblock %}
+
+{# Light-only design: skip Django's dark-mode stylesheet and theme switcher. #}
+{% block dark-mode-vars %}{% endblock %}
+
+{% block branding %}
+<div id="site-name">
+  <a href="{% url 'admin:index' %}">{{ site_header|default:"Eshop admin" }}<span class="branding-dot">.</span></a>
+</div>
+<a class="branding-store" href="{% url 'product_list' %}">View storefront</a>
+{% endblock %}
+
+{% comment %}
+  Replaces the stock user links: keeps password change and the CSRF logout
+  form, drops the "View site" duplicate (branding already links to the
+  storefront) and the dark-mode toggle.
+{% endcomment %}
+{% block userlinks %}
+  {% if user.has_usable_password %}
+    <a href="{% url 'admin:password_change' %}">{% translate 'Change password' %}</a>
+  {% endif %}
+  <form id="logout-form" method="post" action="{% url 'admin:logout' %}">
+    {% csrf_token %}
+    <button type="submit">{% translate 'Log out' %}</button>
+  </form>
+{% endblock %}
+
+{% block responsive %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'products/css/admin.css' %}" />
+{% endblock %}
